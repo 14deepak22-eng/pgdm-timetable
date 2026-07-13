@@ -117,3 +117,23 @@ export function parseSessionCell(cellText: string): ClassEntry[] {
       return { raw: part, subjectCode, room };
     });
 }
+
+/**
+ * Checks whether a cell's text resembles a course code (e.g. starts with
+ * 2-4 letters followed by 3 digits, like "MK629" or "ST509") in at least
+ * one of its "/"-separated parts. Used as a catch-all: any non-empty cell
+ * that doesn't look like a class AND doesn't match a known event keyword
+ * gets treated as a generic event instead of showing up as a garbled
+ * "class" — covers things like workshops, industry visits, farewells,
+ * or any other one-off text someone adds to the sheet.
+ */
+export function looksLikeSubjectCell(cellText: string): boolean {
+  const trimmed = cellText.trim();
+  if (!trimmed) return false;
+
+  return trimmed
+    .split('/')
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .some((part) => BASE_CODE_PATTERN.test(part));
+}
