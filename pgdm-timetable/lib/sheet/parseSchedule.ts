@@ -3,7 +3,7 @@ import type { ScheduleEvent } from '@/types/events';
 import { DAY_HEADER_MARKER, SESSION_ORDER, SESSION_TIMES, TARGET_BATCH_PREFIX } from './constants';
 import { matchTargetSection } from './matchBatch';
 import { parseDateLabel } from './parseDate';
-import { detectEventCategory, parseSessionCell } from './parseCell';
+import { detectEventCategory, looksLikeSubjectCell, parseSessionCell } from './parseCell';
 
 // Column layout (0-indexed): A=0 (seq no.), B=1 (Date & Day), C=2 (Batch and Section),
 // D..J=3..9 (the 7 session slots, in SESSION_ORDER).
@@ -82,8 +82,15 @@ export function parseSchedule(rows: string[][]): ParsedSchedule {
 
     const sessions: SessionSlot[] = SESSION_ORDER.map((key, idx) => {
       const cellText = sessionCells[idx];
-      const category = detectEventCategory(cellText);
       const { start, end } = SESSION_TIMES[key];
+
+      const keywordCategory = detectEventCategory(cellText);
+      // Catch-all: a non-empty cell that isn't a recognized keyword event
+      // AND doesn't look like a subject code (e.g. "Industry Visit",
+      // "Farewell", any one-off text) is treated as a generic event
+      // rather than showing up as a garbled "class".
+      const isCatchAllEvent = !keywordCategory && cellText.trim() && !looksLikeSubjectCell(cellText);
+      const category = keywordCategory ?? (isCatchAllEvent ? 'other' : null);
 
       if (category) {
         events.push({
