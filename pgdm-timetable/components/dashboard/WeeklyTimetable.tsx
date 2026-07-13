@@ -9,6 +9,8 @@ interface WeeklyTimetableProps {
   section: TargetSection;
   now: Date;
   query?: string;
+  /** How many consecutive weeks to render, starting from the current week (1-4). */
+  weeksToShow?: number;
 }
 
 function startOfWeek(date: Date): Date {
@@ -20,9 +22,26 @@ function startOfWeek(date: Date): Date {
   return d;
 }
 
-export function WeeklyTimetable({ days, section, now, query = '' }: WeeklyTimetableProps) {
+function formatWeekRange(start: Date, end: Date): string {
+  const startLabel = start.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
+  const endLabel = end.toLocaleDateString('en-IN', {
+    month: start.getMonth() === end.getMonth() ? undefined : 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+  return `${startLabel} – ${endLabel}`;
+}
+
+interface SingleWeekTableProps {
+  days: DaySchedule[];
+  section: TargetSection;
+  now: Date;
+  query: string;
+  weekStart: Date;
+}
+
+function SingleWeekTable({ days, section, now, query, weekStart }: SingleWeekTableProps) {
   const q = query.trim().toLowerCase();
-  const weekStart = startOfWeek(now);
   const weekDates = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(weekStart);
     d.setDate(d.getDate() + i);
@@ -111,5 +130,55 @@ export function WeeklyTimetable({ days, section, now, query = '' }: WeeklyTimeta
         </tbody>
       </table>
     </Card>
+  );
+}
+
+export function WeeklyTimetable({
+  days,
+  section,
+  now,
+  query = '',
+  weeksToShow = 1,
+}: WeeklyTimetableProps) {
+  const clampedWeeks = Math.min(4, Math.max(1, weeksToShow));
+  const currentWeekStart = startOfWeek(now);
+
+  const weeks = Array.from({ length: clampedWeeks }, (_, i) => {
+    const start = new Date(currentWeekStart);
+    start.setDate(start.getDate() + i * 7);
+    const end = new Date(start);
+    end.setDate(end.getDate() + 6);
+    return { start, end };
+  });
+
+  if (clampedWeeks === 1) {
+    return (
+      <SingleWeekTable
+        days={days}
+        section={section}
+        now={now}
+        query={query}
+        weekStart={weeks[0].start}
+      />
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-5">
+      {weeks.map(({ start, end }, i) => (
+        <div key={start.toISOString()} className="flex flex-col gap-2">
+          <p className="text-muted text-xs font-medium tracking-wide uppercase">
+            {i === 0 ? 'This week' : `Week ${i + 1}`} · {formatWeekRange(start, end)}
+          </p>
+          <SingleWeekTable
+            days={days}
+            section={section}
+            now={now}
+            query={query}
+            weekStart={start}
+          />
+        </div>
+      ))}
+    </div>
   );
 }
