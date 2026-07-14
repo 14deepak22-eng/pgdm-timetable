@@ -59,7 +59,7 @@ export function SheetSourceForm({ currentOverride, onSave }: SheetSourceFormProp
             setValue(e.target.value);
             setSaved(null);
           }}
-          placeholder="https://docs.google.com/spreadsheets/d/..."
+          placeholder="https://docs.google.com/spreadsheets/d/1FEKe5fBUREJ_dx8lrwvW3p89u8kZw1lEo6nC7ERA15U/edit?usp=drivesdk"
           className="border-border bg-surface placeholder:text-muted focus-visible:ring-accent flex-1 rounded-md border px-3 py-2 text-sm outline-none focus-visible:ring-2"
         />
         <Button onClick={save}>Save</Button>
