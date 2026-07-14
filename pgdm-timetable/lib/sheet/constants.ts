@@ -52,13 +52,13 @@ export const CANONICAL_SUBJECT_CODES = [
 
 // Session number -> time range, for the 2025-27 batch's grid (sheet rows 2-3).
 export const SESSION_TIMES: Record<string, { start: string; end: string }> = {
-  I: { start: '08:30', end: '10:00' },
-  II: { start: '10:15', end: '11:45' },
-  III: { start: '12:00', end: '13:30' },
+  I: { start: '09:00', end: '10:30' },
+  II: { start: '10:45', end: '12:15' },
+  III: { start: '12:30', end: '14:00' },
   LUNCH: { start: '13:30', end: '14:30' },
-  IV: { start: '14:30', end: '16:00' },
-  V: { start: '16:15', end: '17:45' },
-  VI: { start: '18:00', end: '19:30' },
+  IV: { start: '15:00', end: '16:30' },
+  V: { start: '16:45', end: '18:15' },
+  VI: { start: '18:30', end: '20:00' },
 };
 
 // Ordered session columns as laid out left-to-right in the sheet for this batch.
