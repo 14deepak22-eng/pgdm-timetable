@@ -3,7 +3,7 @@
 import type { WeeksToShow } from '@/hooks/useWeeksToShow';
 import { cn } from '@/lib/utils/cn';
 
-const OPTIONS: WeeksToShow[] = [1, 2, 3, 4,5];
+const OPTIONS: WeeksToShow[] = [1, 2, 3, 4,];
 
 interface WeeksSelectorProps {
   value: WeeksToShow;
