@@ -5,13 +5,19 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { extractSheetId } from '@/lib/utils/sheetId';
 
+// The default sheet ID baked in at build time (NEXT_PUBLIC_ vars are safe
+// to read client-side — Next.js inlines them into the bundle). Used so
+// the field below always shows the currently active sheet instead of
+// starting blank.
+const DEFAULT_SHEET_ID = process.env.NEXT_PUBLIC_SHEET_ID ?? '';
+
 interface SheetSourceFormProps {
   currentOverride: string | null;
   onSave: (sheetId: string | null) => void;
 }
 
 export function SheetSourceForm({ currentOverride, onSave }: SheetSourceFormProps) {
-  const [value, setValue] = useState(currentOverride ?? '');
+  const [value, setValue] = useState(currentOverride ?? DEFAULT_SHEET_ID);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState<'saved' | 'reset' | null>(null);
 
@@ -29,7 +35,7 @@ export function SheetSourceForm({ currentOverride, onSave }: SheetSourceFormProp
 
   const reset = () => {
     setError(null);
-    setValue('');
+    setValue(DEFAULT_SHEET_ID);
     onSave(null);
     setSaved('reset');
   };
@@ -39,8 +45,9 @@ export function SheetSourceForm({ currentOverride, onSave }: SheetSourceFormProp
       <div>
         <h2 className="font-display text-lg font-bold tracking-wide uppercase">Sheet Source</h2>
         <p className="text-muted mt-1 text-sm">
-          Paste a Google Sheets link (or just its ID) to point the dashboard at a different sheet.
-          The sheet must be shared as &quot;Anyone with the link can view.&quot;
+          This is the Google Sheet the dashboard currently reads from. Paste a different link (or
+          just its ID) to switch sources — the sheet must be shared as &quot;Anyone with the link
+          can view.&quot;
         </p>
       </div>
 
@@ -60,7 +67,7 @@ export function SheetSourceForm({ currentOverride, onSave }: SheetSourceFormProp
 
       {error && <p className="text-danger text-xs">{error}</p>}
       {saved === 'saved' && (
-        <p className="text-accent-2 text-xs">Saved — reloading data from the new sheet.</p>
+        <p className="text-accent-2 text-xs">Saved — reloading data from this sheet.</p>
       )}
       {saved === 'reset' && <p className="text-accent-2 text-xs">Reset to the default sheet.</p>}
 
