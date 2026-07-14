@@ -12,6 +12,20 @@ export function sessionLabel(session: string): string {
   return SESSION_LABELS[session] ?? session;
 }
 
+/** Formats a "HH:mm" 24-hour time as "h:mm AM/PM", e.g. "08:30" -> "8:30 AM". */
+export function formatTime12h(hhmm: string): string {
+  const [hStr, mStr] = hhmm.split(':');
+  const hour24 = parseInt(hStr, 10);
+  const period = hour24 >= 12 ? 'PM' : 'AM';
+  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+  return `${hour12}:${mStr} ${period}`;
+}
+
+/** Formats a session's start-end range, e.g. "8:30 AM – 10:00 AM". */
+export function formatSessionTimeRange(start: string, end: string): string {
+  return `${formatTime12h(start)} – ${formatTime12h(end)}`;
+}
+
 /** Formats a millisecond duration as "1h 24m 03s" (or "24m 03s", or "03s"). */
 export function formatCountdown(ms: number): string {
   const totalSeconds = Math.max(0, Math.floor(ms / 1000));
