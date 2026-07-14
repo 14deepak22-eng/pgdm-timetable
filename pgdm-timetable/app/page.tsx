@@ -6,11 +6,13 @@ import { NextClassCard } from '@/components/dashboard/NextClassCard';
 import { StatsCards } from '@/components/dashboard/StatsCards';
 import { TodayClasses } from '@/components/dashboard/TodayClasses';
 import { WeeklyTimetable } from '@/components/dashboard/WeeklyTimetable';
+import { WeeksSelector } from '@/components/dashboard/WeeksSelector';
 import { SearchBox } from '@/components/shared/SearchBox';
 import { Skeleton } from '@/components/shared/Skeleton';
 import { ErrorState } from '@/components/shared/ErrorState';
 import { useSchedule } from '@/components/providers/ScheduleProvider';
 import { useCountdown } from '@/hooks/useCountdown';
+import { useWeeksToShow } from '@/hooks/useWeeksToShow';
 import { computeDashboardStats } from '@/lib/schedule/deriveStats';
 import { filterClassesBySubjects } from '@/lib/schedule/filterSubjects';
 import { mergeAllDaySections, mergeAllSectionEvents } from '@/lib/schedule/mergeSections';
@@ -27,6 +29,7 @@ export default function DashboardPage() {
     showAllSections,
   } = useSchedule();
   const [query, setQuery] = useState('');
+  const [weeksToShow, setWeeksToShow] = useWeeksToShow();
 
   const scopedClasses = showAllSections ? mergeAllDaySections(classes) : classes;
   const scopedEvents = showAllSections ? mergeAllSectionEvents(events) : events;
@@ -75,14 +78,18 @@ export default function DashboardPage() {
             </section>
 
             <section className="flex flex-col gap-3 pb-8">
-              <h2 className="font-display text-lg font-bold tracking-wide uppercase">
-                Weekly Timetable
-              </h2>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h2 className="font-display text-lg font-bold tracking-wide uppercase">
+                  Weekly Timetable
+                </h2>
+                <WeeksSelector value={weeksToShow} onChange={setWeeksToShow} />
+              </div>
               <WeeklyTimetable
                 days={filteredClasses}
                 section={effectiveSection}
                 now={now}
                 query={query}
+                weeksToShow={weeksToShow}
               />
             </section>
           </>
