@@ -1,7 +1,7 @@
 import type { DaySchedule, TargetSection } from '@/types/timetable';
 import { Card } from '@/components/ui/Card';
-import { SESSION_ORDER } from '@/lib/sheet/constants';
-import { sessionLabel } from '@/lib/utils/date';
+import { SESSION_ORDER, SESSION_TIMES } from '@/lib/sheet/constants';
+import { sessionLabel, formatSessionTimeRange } from '@/lib/utils/date';
 import { cn } from '@/lib/utils/cn';
 
 interface WeeklyTimetableProps {
@@ -87,7 +87,12 @@ function SingleWeekTable({ days, section, now, query, weekStart }: SingleWeekTab
         <tbody>
           {SESSION_ORDER.filter((s) => s !== 'LUNCH').map((session) => (
             <tr key={session} className="border-border border-b last:border-0">
-              <td className="text-muted px-3 py-2.5 align-top text-xs">{sessionLabel(session)}</td>
+              <td className="text-muted px-3 py-2.5 align-top text-xs">
+                <div className="text-foreground font-medium">{sessionLabel(session)}</div>
+                <div className="tabular mt-0.5 font-mono text-[11px]">
+                  {formatSessionTimeRange(SESSION_TIMES[session].start, SESSION_TIMES[session].end)}
+                </div>
+              </td>
               {visibleDates.map((iso) => {
                 const day = byDate.get(iso);
                 const slot = day?.sessions.find((s) => s.session === session);
