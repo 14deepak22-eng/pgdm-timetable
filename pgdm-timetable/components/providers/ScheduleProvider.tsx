@@ -3,11 +3,13 @@
 import { createContext, useContext, type ReactNode } from 'react';
 import type { DaySchedule, TargetSection } from '@/types/timetable';
 import type { ScheduleEvent } from '@/types/events';
+import type { ChangeNotice } from '@/lib/schedule/diffSchedule';
 import { useSheetData } from '@/hooks/useSheetData';
 import { useSelectedSection } from '@/hooks/useSelectedSection';
 import { useSheetSource } from '@/hooks/useSheetSource';
 import { useSubjectPreferences } from '@/hooks/useSubjectPreferences';
 import { useShowAllSections } from '@/hooks/useShowAllSections';
+import { useChangeNotices } from '@/hooks/useChangeNotices';
 
 interface ScheduleContextValue {
   classes: DaySchedule[];
@@ -25,6 +27,7 @@ interface ScheduleContextValue {
   setSelectedSubjects: (subjects: string[]) => void;
   showAllSections: boolean;
   setShowAllSections: (value: boolean) => void;
+  notices: ChangeNotice[];
 }
 
 const ScheduleContext = createContext<ScheduleContextValue | null>(null);
@@ -35,6 +38,7 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
   const [section, setSection] = useSelectedSection();
   const [selectedSubjects, setSelectedSubjects] = useSubjectPreferences();
   const [showAllSections, setShowAllSections] = useShowAllSections();
+  const notices = useChangeNotices(sheet.classes, sheet.events);
 
   return (
     <ScheduleContext.Provider
@@ -48,6 +52,7 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
         setSelectedSubjects,
         showAllSections,
         setShowAllSections,
+        notices,
       }}
     >
       {children}
