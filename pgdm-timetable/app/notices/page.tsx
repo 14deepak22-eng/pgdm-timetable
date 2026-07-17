@@ -1,14 +1,17 @@
 'use client';
 
 import { useMemo } from 'react';
+import { Trash2 } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
+import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/shared/Skeleton';
 import { ErrorState } from '@/components/shared/ErrorState';
 import { NoticeList } from '@/components/events/NoticeList';
 import { useSchedule } from '@/components/providers/ScheduleProvider';
 
 export default function NoticesPage() {
-  const { notices, initialLoading, error, refresh, section, showAllSections } = useSchedule();
+  const { notices, clearNotices, initialLoading, error, refresh, section, showAllSections } =
+    useSchedule();
 
   const effectiveSection = showAllSections ? 'A' : section;
   const scopedNotices = showAllSections
@@ -39,10 +42,23 @@ export default function NoticesPage() {
           </div>
         ) : (
           <>
-            <h1 className="font-display text-2xl font-bold tracking-wide uppercase">Notice</h1>
-            <p className="text-muted -mt-4 text-sm">
-              Auto-detected changes to the sheet, kept visible for 1 week.
-            </p>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h1 className="font-display text-2xl font-bold tracking-wide uppercase">Notice</h1>
+                <p className="text-muted text-sm">
+                  Auto-detected changes to the sheet, kept visible for 1 week.
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                onClick={clearNotices}
+                disabled={notices.length === 0}
+                className="gap-1.5"
+              >
+                <Trash2 className="h-4 w-4" />
+                Clear All
+              </Button>
+            </div>
 
             <NoticeList
               title="Class Notices"
