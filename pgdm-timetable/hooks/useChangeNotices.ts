@@ -38,6 +38,11 @@ function readSnapshot(): ScheduleSnapshot | null {
   }
 }
 
+export interface UseChangeNoticesResult {
+  notices: ChangeNotice[];
+  clearNotices: () => void;
+}
+
 /**
  * Detects changes to the sheet by comparing each successful fetch against
  * the last-seen snapshot (stored in this browser). Any difference — a
@@ -48,7 +53,10 @@ function readSnapshot(): ScheduleSnapshot | null {
  * establishes the baseline without generating notices — otherwise every
  * new visitor would see the entire term's worth of classes as "new".
  */
-export function useChangeNotices(classes: DaySchedule[], events: ScheduleEvent[]): ChangeNotice[] {
+export function useChangeNotices(
+  classes: DaySchedule[],
+  events: ScheduleEvent[],
+): UseChangeNoticesResult {
   const [notices, setNotices] = useState<ChangeNotice[]>([]);
   const hasData = classes.length > 0 || events.length > 0;
 
@@ -83,5 +91,14 @@ export function useChangeNotices(classes: DaySchedule[], events: ScheduleEvent[]
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(classes), JSON.stringify(events)]);
 
-  return notices;
+  const clearNotices = () => {
+    setNotices([]);
+    try {
+      localStorage.setItem(NOTICES_KEY, JSON.stringify([]));
+    } catch {
+      // Storage unavailable — clearing just won't persist across visits.
+    }
+  };
+
+  return { notices, clearNotices };
 }
