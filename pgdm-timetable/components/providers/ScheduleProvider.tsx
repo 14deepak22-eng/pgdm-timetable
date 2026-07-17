@@ -28,6 +28,7 @@ interface ScheduleContextValue {
   showAllSections: boolean;
   setShowAllSections: (value: boolean) => void;
   notices: ChangeNotice[];
+  clearNotices: () => void;
 }
 
 const ScheduleContext = createContext<ScheduleContextValue | null>(null);
@@ -38,7 +39,7 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
   const [section, setSection] = useSelectedSection();
   const [selectedSubjects, setSelectedSubjects] = useSubjectPreferences();
   const [showAllSections, setShowAllSections] = useShowAllSections();
-  const notices = useChangeNotices(sheet.classes, sheet.events);
+  const { notices, clearNotices } = useChangeNotices(sheet.classes, sheet.events);
 
   return (
     <ScheduleContext.Provider
@@ -53,6 +54,7 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
         showAllSections,
         setShowAllSections,
         notices,
+        clearNotices,
       }}
     >
       {children}
