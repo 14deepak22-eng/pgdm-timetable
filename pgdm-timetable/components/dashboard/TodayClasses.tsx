@@ -2,7 +2,7 @@ import type { DaySchedule, TargetSection } from '@/types/timetable';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { EmptyState } from '@/components/shared/EmptyState';
-import { sessionLabel } from '@/lib/utils/date';
+import { sessionLabel, toLocalISODate } from '@/lib/utils/date';
 import { cn } from '@/lib/utils/cn';
 import { CalendarCheck2 } from 'lucide-react';
 
@@ -28,7 +28,7 @@ const STATUS_EDGE: Record<RowStatus, string> = {
 };
 
 export function TodayClasses({ days, section, now, query = '' }: TodayClassesProps) {
-  const todayISO = now.toISOString().slice(0, 10);
+  const todayISO = toLocalISODate(now);
   const today = days.find((d) => d.date === todayISO && d.section === section);
 
   if (!today || today.isHoliday) {
