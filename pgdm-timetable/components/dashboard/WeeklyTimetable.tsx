@@ -1,7 +1,7 @@
 import type { DaySchedule, TargetSection } from '@/types/timetable';
 import { Card } from '@/components/ui/Card';
 import { SESSION_ORDER, SESSION_TIMES } from '@/lib/sheet/constants';
-import { sessionLabel, formatSessionTimeRange } from '@/lib/utils/date';
+import { sessionLabel, formatSessionTimeRange, toLocalISODate } from '@/lib/utils/date';
 import { cn } from '@/lib/utils/cn';
 
 interface WeeklyTimetableProps {
@@ -45,14 +45,14 @@ function SingleWeekTable({ days, section, now, query, weekStart }: SingleWeekTab
   const weekDates = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(weekStart);
     d.setDate(d.getDate() + i);
-    return d.toISOString().slice(0, 10);
+    return toLocalISODate(d);
   });
 
   const byDate = new Map(days.filter((d) => d.section === section).map((d) => [d.date, d]));
 
   // Skip weekend columns entirely if there's no data for them at all this week.
   const visibleDates = weekDates.filter((iso, idx) => idx < 5 || byDate.has(iso));
-  const todayISO = now.toISOString().slice(0, 10);
+  const todayISO = toLocalISODate(now);
 
   return (
     <Card className="overflow-x-auto p-0">
