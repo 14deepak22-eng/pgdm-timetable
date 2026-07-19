@@ -1,4 +1,5 @@
 import type { DaySchedule, TargetSection } from '@/types/timetable';
+import { toLocalISODate } from '@/lib/utils/date';
 
 export interface DashboardStats {
   classesToday: number;
@@ -28,7 +29,7 @@ export function computeDashboardStats(
   section: TargetSection,
   now: Date,
 ): DashboardStats {
-  const todayISO = now.toISOString().slice(0, 10);
+  const todayISO = toLocalISODate(now);
   const sectionDays = days.filter((d) => d.section === section);
 
   const todayEntry = sectionDays.find((d) => d.date === todayISO);
