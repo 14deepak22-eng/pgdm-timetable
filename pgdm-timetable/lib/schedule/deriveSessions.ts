@@ -1,5 +1,6 @@
 import type { DaySchedule, SessionSlot, TargetSection } from '@/types/timetable';
 import type { ScheduleEvent } from '@/types/events';
+import { toLocalISODate } from '@/lib/utils/date';
 
 export interface SessionInstance {
   date: string; // ISO date
@@ -64,7 +65,7 @@ export function getNextEvent(
   section: TargetSection,
   now: Date,
 ): ScheduleEvent | null {
-  const todayISO = now.toISOString().slice(0, 10);
+  const todayISO = toLocalISODate(now);
   return (
     events
       .filter((e) => e.section === section && e.date >= todayISO)
