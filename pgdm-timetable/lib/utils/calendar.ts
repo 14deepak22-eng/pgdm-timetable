@@ -1,4 +1,5 @@
 import type { ScheduleEvent } from '@/types/events';
+import { toLocalISODate } from '@/lib/utils/date';
 
 /** Formats an ISO date (yyyy-mm-dd) as yyyymmdd for Google Calendar's date params. */
 function toCalendarDate(iso: string): string {
@@ -13,7 +14,7 @@ export function buildGoogleCalendarUrl(event: ScheduleEvent): string {
   const start = toCalendarDate(event.date);
   const endDate = new Date(`${event.date}T00:00:00`);
   endDate.setDate(endDate.getDate() + 1);
-  const end = toCalendarDate(endDate.toISOString().slice(0, 10));
+  const end = toCalendarDate(toLocalISODate(endDate));
 
   const params = new URLSearchParams({
     action: 'TEMPLATE',
