@@ -1,5 +1,6 @@
 import type { ScheduleEvent, EventCategory } from '@/types/events';
 import type { TargetSection } from '@/types/timetable';
+import { toLocalISODate } from '@/lib/utils/date';
 
 export interface EventBuckets {
   today: ScheduleEvent[];
@@ -27,7 +28,7 @@ export function filterEvents(
 }
 
 export function bucketEvents(events: ScheduleEvent[], now: Date): EventBuckets {
-  const todayISO = now.toISOString().slice(0, 10);
+  const todayISO = toLocalISODate(now);
 
   const today: ScheduleEvent[] = [];
   const upcoming: ScheduleEvent[] = [];
