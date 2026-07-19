@@ -12,6 +12,25 @@ export function sessionLabel(session: string): string {
   return SESSION_LABELS[session] ?? session;
 }
 
+/**
+ * Formats a Date as a local "yyyy-MM-dd" string, using local calendar
+ * fields (getFullYear/getMonth/getDate) rather than Date#toISOString().
+ *
+ * toISOString() converts to UTC first, which silently shifts the date
+ * backward by one day for any timezone ahead of UTC (e.g. India,
+ * UTC+5:30) whenever the Date represents local midnight or early
+ * morning — exactly the kind of bug that made "this week" show the
+ * wrong date range. Always use this instead of
+ * `date.toISOString().slice(0, 10)` when the intent is "today's date
+ * where the user is", not "today's date in UTC".
+ */
+export function toLocalISODate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 /** Formats a "HH:mm" 24-hour time as "h:mm AM/PM", e.g. "08:30" -> "8:30 AM". */
 export function formatTime12h(hhmm: string): string {
   const [hStr, mStr] = hhmm.split(':');
