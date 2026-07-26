@@ -1,7 +1,10 @@
 import type { Metadata, Viewport } from 'next';
 import { Big_Shoulders, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 import { ScheduleProvider } from '@/components/providers/ScheduleProvider';
 import { ServiceWorkerRegistration } from '@/components/providers/ServiceWorkerRegistration';
+import { YearGate } from '@/components/onboarding/YearGate';
+import { AnnouncementModal } from '@/components/shared/AnnouncementModal';
 import './globals.css';
 
 const display = Big_Shoulders({
@@ -23,8 +26,8 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'PGDM 2025-27 | Session Board',
-  description: 'Live class schedule, countdowns, and events for PGDM 2025-27, Sections A/B/C.',
+  title: 'IMI PGDM Smart Schedule',
+  description: 'Live class schedule, countdowns, and events for IMI PGDM batches.',
   manifest: '/manifest.json',
   icons: {
     icon: [
@@ -37,7 +40,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Session Board',
+    title: 'Smart Schedule',
   },
 };
 
@@ -73,7 +76,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body className="bg-background text-foreground flex min-h-full flex-col font-sans">
         <ServiceWorkerRegistration />
-        <ScheduleProvider>{children}</ScheduleProvider>
+        <ScheduleProvider>
+          <YearGate>{children}</YearGate>
+        </ScheduleProvider>
+        <AnnouncementModal />
+        <Analytics />
       </body>
     </html>
   );
