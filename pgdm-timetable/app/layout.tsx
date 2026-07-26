@@ -81,7 +81,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <YearGate>{children}</YearGate>
         </ScheduleProvider>
         <AnnouncementModal />
-         <InstallPrompt />
+        <InstallPrompt />
         <Analytics />
       </body>
     </html>
